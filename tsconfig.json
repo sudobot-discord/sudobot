@@ -1,0 +1,27 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "incremental": true,
+        "lib": [
+            "esnext",
+            "esnext.array",
+            "esnext.asynciterable",
+            "esnext.intl",
+            "esnext.symbol"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "pretty": true,
+        "target": "esnext",
+        "types": ["node", "klasa", "discord.js"]
+    },
+    "include": [
+        "./src/**/*"
+    ],
+    "exclude": ["./node_modules"]
+  }
+  
