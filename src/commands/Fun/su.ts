@@ -10,7 +10,8 @@ export default class extends Command {
     }
 
     async run(msg: KlasaMessage): Promise<KlasaMessage | KlasaMessage[]> {
-        if (this.client.sudoOpts.ownerIDs.includes(msg.author.id)) throw msg.channel.send("[sudo] password for `" + msg.author.username + "`:\nAccess granted");
+        const client = msg.client as SudoClient;
+        if (client.sudoOpts.ownerIDs.includes(msg.author.id)) throw msg.channel.send("[sudo] password for `" + msg.author.username + "`:\nAccess granted");
         else throw msg.channel.send("[sudo] password for `" + msg.author.username + "`:\nAccess denied");
     }
 }

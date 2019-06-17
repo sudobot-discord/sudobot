@@ -18,6 +18,6 @@ export default class extends Command {
         if (typeof amount !== "number") throw msg.reply(msg.language.get("AMOUNT_MUST_BE_NUMBER"));
         if (amount < 2 || amount > 100) throw msg.reply(msg.language.get("AMOUNT_FALSE"));
         msg.channel.bulkDelete(amount);
-        throw msg.reply('👌').then(sentMsg => sentMsg.delete({timeout: 5000}));
+        throw msg.reply('👌').then((sentMsg: KlasaMessage) => sentMsg.delete({timeout: 3000}));
     }
 }
