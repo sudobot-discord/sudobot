@@ -6,14 +6,18 @@ export default class extends Command {
         super(client, store, file, dir, {
             name: "prune",
             enabled: true,
+            permissionLevel: 1,
+            requiredPermissions: ['MANAGE_MESSAGES'],
             aliases: ["clean", "purge"],
             usage: "[amount:int]"
         });
     }
 
-    async run(msg: KlasaMessage, [amount]): Promise<KlasaMessage | KlasaMessage[]> {
-        if (!amount) throw msg.language.get("THERE_IS_NO_AMOUNT");
+    async run(msg: KlasaMessage, [amount]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
+        if (!amount) throw msg.reply(msg.language.get("THERE_IS_NO_AMOUNT_TO_PRUNE"));
+        if (typeof amount !== "number") throw msg.reply(msg.language.get("AMOUNT_MUST_BE_NUMBER"));
+        if (amount < 2 || amount > 100) throw msg.reply(msg.language.get("AMOUNT_FALSE"));
         msg.channel.bulkDelete(amount);
-        return;
+        throw msg.reply('👌').then(sentMsg => sentMsg.delete({timeout: 5000}));
     }
 }
