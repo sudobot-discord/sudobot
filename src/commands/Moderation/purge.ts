@@ -1,4 +1,5 @@
 import { Command, CommandStore, KlasaMessage, CommandOptions } from "klasa";
+import { Collection } from 'discord.js';
 import { SudoClient } from "../../core/SudoClient";
 
 export default class extends Command {
@@ -15,14 +16,13 @@ export default class extends Command {
 
     async run(msg: KlasaMessage, [amount]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
         if (!amount || amount < 1) throw msg.reply(msg.language.get("AMOUNT_FALSE"));
-        let messages: Collection<string, Message>;
-        messages = (await msg.channel.messages.fetch({
-            limit: Math.min(quantity, 100),
-            before: msg.id
-        }));
+
+        let messages = (await msg.channel.messages.fetch({
+                limit: Math.min(amount, 100),
+                before: msg.id
+            }));
         msg.delete();
-        await message.channel.bulkDelete(messages);
-        msg.channel.bulkDelete(amount);
+        await msg.channel.bulkDelete(messages);
         throw msg.reply('👌').then((sentMsg: KlasaMessage) => sentMsg.delete({
             timeout: 3000
         }));
