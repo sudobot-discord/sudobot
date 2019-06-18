@@ -1,4 +1,5 @@
 import { Command, CommandStore, KlasaMessage, CommandOptions } from "klasa";
+import { GuildMember } from 'discord.js';
 import { SudoClient } from "../../core/SudoClient";
 
 export default class extends Command {
@@ -8,16 +9,30 @@ export default class extends Command {
             enabled: true,
             permissionLevel: 1,
             requiredPermissions: ['MANAGE_MESSAGES'],
-            aliases: ["clean", "purge"],
+            aliases: [],
             usage: "[amount:int]"
         });
     }
 
-    async run(msg: KlasaMessage, [amount]: [number]): Promise<KlasaMessage | KlasaMessage[]> {
-        if (!amount) throw msg.reply(msg.language.get("THERE_IS_NO_AMOUNT_TO_PRUNE"));
-        if (typeof amount !== "number") throw msg.reply(msg.language.get("AMOUNT_MUST_BE_NUMBER"));
-        if (amount < 2 || amount > 100) throw msg.reply(msg.language.get("AMOUNT_FALSE"));
-        msg.channel.bulkDelete(amount);
-        throw msg.reply('👌').then((sentMsg: KlasaMessage) => sentMsg.delete({timeout: 3000}));
+    async run(msg: KlasaMessage, [amount, member]: [number, GuildMember]): Promise<KlasaMessage | KlasaMessage[]> {
+        if (!amount || amount < 1) throw msg.reply(msg.language.get("AMOUNT_FALSE"));
+        if (!member) throw msg.reply(msg.language.get("MENTION_MEMBER"));
+        
+        const messages: Message[] = (await msg.channel.messages.fetch({
+                limit: 100,
+                before: msg.id
+            }))
+            .filter((a: Message) => a.author.id === member.id)
+            .array();
+        messages.length = Math.min(quantity, messages.length);
+        
+        if (messages.length === 0) return msg.reply(msg.language.get("NO_MESSAGES_FROM_THAT_USER");
+        if (messages.length === 1) await messages[0].delete();
+        else await msg.channel.bulkDelete(messages);
+        if (member.id === msg.author.id) msg.delete();
+
+        throw msg.reply('👌').then((sentMsg: KlasaMessage) => sentMsg.delete({
+            timeout: 3000
+        }));
     }
 }
