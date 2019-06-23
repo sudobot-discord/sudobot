@@ -1,4 +1,4 @@
-import { KlasaClient, KlasaClientOptions} from "klasa";
+import { KlasaClient, KlasaClientOptions } from "klasa";
 
 export class SudoClient extends KlasaClient {
     constructor(options: KlasaClientOptions, public sudoOpts: SudoClientOptions) {
@@ -8,6 +8,6 @@ export class SudoClient extends KlasaClient {
 
 export type SudoClientOptions = {
     version: string
-    disabledModules?: string|any[] 
+    disabledModules?: string|any[]
     ownerIDs: string[]
 }

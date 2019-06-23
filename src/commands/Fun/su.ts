@@ -5,7 +5,8 @@ export default class extends Command {
     constructor(client: SudoClient, store: CommandStore, file, dir, options?: CommandOptions) {
         super(client, store, file, dir, {
             name: "su",
-            enabled: true
+            enabled: true,
+            description: language => language.get("COMMAND_SU_DESCRIPTION")
         });
     }
 
