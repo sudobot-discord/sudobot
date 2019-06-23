@@ -17,7 +17,10 @@
   "dependencies": {
     "discord.js": "github:discordjs/discord.js#master",
     "dotenv": "^8.0.0",
-    "klasa": "github:dirigeants/klasa"
+    "klasa": "github:dirigeants/klasa",
+    "query-string": "^6.8.1",
+    "request": "^2.88.0",
+    "turndown": "^5.0.3"
   },
   "scripts": {
     "build": "tsc",
