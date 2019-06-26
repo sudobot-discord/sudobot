@@ -13,7 +13,7 @@ export default class extends Command {
             requiredPermissions: ['EMBED_LINKS'],
             aliases: ["mozilla-developer-network"],
             description: language => language.get("COMMAND_MDN_DESCRIPTION"),
-            usage: "[query:string]",
+            usage: "<query:string>",
             usageDelim: " "
         });
     }
@@ -27,7 +27,7 @@ export default class extends Command {
             if (!error && response.statusCode === 200) {
                 body = JSON.parse(body);
                 if (!body.URL || !body.Title || !body.Summary) {
-                    throw msg.reply(msg.language.get("ERROR"));
+                    throw msg.reply(msg.language.get("404"));
                 };
                 turndown.addRule('hyperlink', {
                     filter: 'a',
