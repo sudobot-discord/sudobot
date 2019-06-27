@@ -10,8 +10,7 @@ export default class extends Command {
             enabled: true,
             requiredPermissions: ['EMBED_LINKS'],
             description: language => language.get("COMMAND_ANILIST_DESCRIPTION"),
-            runIn: ['text'],
-            usage: "<anime|manga|character|person|studio:string> <query:...string>",
+            usage: "<anime|manga|character|person|studio> <query:...string>",
             usageDelim: " "
         });
     }

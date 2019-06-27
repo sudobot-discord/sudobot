@@ -11,8 +11,8 @@ export default class extends Command {
             enabled: true,
             requiredPermissions: ['EMBED_LINKS'],
             aliases: ["djs", "djsdocs"],
-            description: language => language.get("COMMAND_DISCORD-JS_DESCRIPTION"),
-            usage: "[query:string]"
+            description: language => language.get("COMMAND_DJS_DESCRIPTION"),
+            usage: "<query:string>"
         });
     }    
     async run(msg: KlasaMessage, [query]): Promise<any> {

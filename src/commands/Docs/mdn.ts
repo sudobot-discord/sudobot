@@ -18,11 +18,8 @@ export default class extends Command {
         });
     }
 
-    async run(msg: KlasaMessage, [query, match]: [string, any]): Promise<any> {
-        
+    async run(msg: KlasaMessage, [query]): Promise<any> {
         const turndown = new Turndown();
-        if (!query && match) query = match[1];
-
         await get(`https://mdn.pleb.xyz/search?${stringify({ q: query })}`, function(error, response, body) {
             if (!error && response.statusCode === 200) {
                 body = JSON.parse(body);
