@@ -1,7 +1,7 @@
 import { Command, CommandStore, KlasaMessage, CommandOptions } from "klasa";
 import { SudoClient } from "../../core/SudoClient";
 import { TextChannel  } from "discord.js";
-import { get } from "request";
+import * as fetch from "node-fetch";
 import { stringify } from "query-string";
 
 export default class extends Command {
@@ -20,31 +20,27 @@ export default class extends Command {
         let source = ['stable', 'master', 'rpc', 'commando', 'akairo', 'akairo-master', '11.5-dev'].includes(q.slice(-1)[0]) ? q.pop() : "stable"; 
         if (source === '11.5-dev') {
 			source = `https://raw.githubusercontent.com/discordjs/discord.js/docs/${source}.json`;
-		}
-        await get(`https://djsdocs.sorta.moe/v2/embed?${stringify({ src: source, q: q.join(' ') })}`, async function(error, response, body) {
-            if (!error && response.statusCode === 200) {
-                const embed = JSON.parse(body);
-                if (!embed) {
-                    throw msg.reply(msg.language.get("404"));
-                }
-                if (!(msg.channel as TextChannel).permissionsFor((msg.client as SudoClient).user).has(['ADD_REACTIONS', 'MANAGE_MESSAGES'], false) || msg.channel.type === "dm") {
-                    return msg.channel.send({ embed });
-                }
-                const message = await msg.channel.send({ embed }) as KlasaMessage;
-                message.react('🗑');
-                let react;
-                try {
-                    react = await message.awaitReactions(
-                        (reaction, user): boolean => reaction.emoji.name === '🗑' && user.id === msg.author.id,
-                        { max: 1, time: 5000, errors: ['time'] }
-                    );
-                } catch (error) {
-                    message.reactions.removeAll();
-                    return message;
-                }
-                react.first().message.delete();
-                return message;
-            }
-        });
+        }
+        const embed = await fetch(`https://djsdocs.sorta.moe/v2/embed?${stringify({ src: source, q: q.join(' ') })}`).then(response => response.json());
+        if (embed.error) {
+            throw msg.reply(msg.language.get("404"));
+        };
+        if (!(msg.channel as TextChannel).permissionsFor((msg.client as SudoClient).user).has(['ADD_REACTIONS', 'MANAGE_MESSAGES'], false) || msg.channel.type === "dm") {
+            return msg.channel.send({ embed });
+        }
+        const message = await msg.channel.send({ embed }) as KlasaMessage;
+        message.react('🗑');
+        let react;
+        try {
+            react = await message.awaitReactions(
+                (reaction, user): boolean => reaction.emoji.name === '🗑' && user.id === msg.author.id,
+                { max: 1, time: 5000, errors: ['time'] }
+            );
+        } catch (error) {
+            message.reactions.removeAll();
+            return message;
+        }
+        react.first().message.delete();
+        return message;
     }
 }

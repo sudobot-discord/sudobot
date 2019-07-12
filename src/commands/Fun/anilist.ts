@@ -1,6 +1,6 @@
 import { Command, CommandStore, KlasaMessage, CommandOptions, KlasaUser } from "klasa";
 import { SudoClient } from "../../core/SudoClient";
-import * as request from "request";
+import * as fetch from "node-fetch";
 import * as Turndown from "turndown";
 
 export default class extends Command {
@@ -32,8 +32,7 @@ export default class extends Command {
         switch (option) {
             case "anime":
                 {
-                    request({
-                        url: 'https://graphql.anilist.co',
+                    const data = await fetch('https://graphql.anilist.co', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -63,42 +62,35 @@ query ($search: String) {
                                 search: input
                             }
                         })
-                    }, function(error, response, body) {
-                        const {
-                            title,
-                            description,
-                            siteUrl,
-                            coverImage,
-                            averageScore: score,
-                            status
-                        } = JSON.parse(body).data.Media;
-                        const scoreString = score != null ? `Score: ${score}%` : "";
-                        const statusString = status != null ? `Status: ${(status).split("_").map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()).join(" ")}` : "";
-                        let footer = "";
-                        if (score) footer += scoreString + "  ";
-                        if (status) footer += statusString;
-                        return msg.channel.send({embed: {
-                            author: {
-                                name: title.romaji,
-                                url: siteUrl,
-                                icon_url: anilistLogo
-                            },
-                            thumbnail: {
-                                url: coverImage.large
-                            },
-                            description: pipe(removeSpoilers, shorten)(description),
-                            footer: {
-                                text: footer
-                            },
-                            color: 3447003
-                        }});
-                    });
+                    }).then(response => response.json())
+                      .then(response => response.data.Media);
+                    console.log(data);
+                    console.log(data.title);
+                    const scoreString = data.averageScore != null ? `Score: ${data.averageScore}%` : "";
+                    const statusString = data.status != null ? `Status: ${(data.status).split("_").map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()).join(" ")}` : "";
+                    let footer = "";
+                    if (data.averageScore) footer += scoreString + "  ";
+                    if (data.status) footer += statusString;
+                    msg.channel.send({embed: {
+                        author: {
+                            name: data.title.romaji,
+                            url: data.siteUrl,
+                            icon_url: anilistLogo
+                        },
+                        thumbnail: {
+                            url: data.coverImage.large
+                        },
+                        description: pipe(removeSpoilers, shorten)(data.description),
+                        footer: {
+                            text: footer
+                        },
+                        color: 3447003
+                    }});
                 }
                 break;
             case "manga":
                 {
-                    request({
-                        url: 'https://graphql.anilist.co',
+                    const data = await fetch('https://graphql.anilist.co', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -128,42 +120,33 @@ query ($search: String) {
                                 search: input
                             }
                         })
-                    }, function(error, response, body) {
-                        const {
-                            title,
-                            description,
-                            siteUrl,
-                            coverImage,
-                            averageScore: score,
-                            status
-                        } = JSON.parse(body).data.Media;
-                        const scoreString = score != null ? `Score: ${score}%` : "";
-                        const statusString = status != null ? `Status: ${(status).split("_").map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()).join(" ")}` : "";
-                        let footer = "";
-                        if (score) footer += scoreString + "  ";
-                        if (status) footer += statusString;
-                        return msg.channel.send({embed: {
-                            author: {
-                                name: title.romaji,
-                                url: siteUrl,
-                                icon_url: anilistLogo
-                            },
-                            thumbnail: {
-                                url: coverImage.large
-                            },
-                            description: pipe(removeSpoilers, shorten)(description),
-                            footer: {
-                                text: footer
-                            },
-                            color: 3447003
-                        }});
-                    });
+                    }).then(response => response.json())
+                      .then(response => response.data.Character);
+                      const scoreString = data.averageScore != null ? `Score: ${data.averageScore}%` : "";
+                      const statusString = data.status != null ? `Status: ${(data.status).split("_").map(word => word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()).join(" ")}` : "";
+                      let footer = "";
+                      if (data.averageScore) footer += scoreString + "  ";
+                      if (data.status) footer += statusString;
+                      msg.channel.send({embed: {
+                          author: {
+                              name: data.title.romaji,
+                              url: data.siteUrl,
+                              icon_url: anilistLogo
+                          },
+                          thumbnail: {
+                              url: data.coverImage.large
+                          },
+                          description: pipe(removeSpoilers, shorten)(data.description),
+                          footer: {
+                              text: footer
+                          },
+                          color: 3447003
+                      }});
                 }
                 break;
             case "character":
                 {
-                    request({
-                        url: 'https://graphql.anilist.co',
+                    const data = await fetch('https://graphql.anilist.co', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -190,36 +173,29 @@ query ($search: String) {
                                 search: input
                             }
                         })
-                    }, function(error, response, body) {
-                        const {
-                            name,
-                            description,
-                            siteUrl,
-                            image
-                        } = JSON.parse(body).data.Character;
-                        let displayName = name.first;
-                        if (name.last != null) {
-                            displayName += ` ${name.last}`;
-                        }
-                        return msg.channel.send({embed: {
-                            author: {
-                                name: displayName,
-                                url: siteUrl,
-                                icon_url: anilistLogo
-                            },
-                            thumbnail: {
-                                url: image.large
-                            },
-                            description: pipe(removeSpoilers, shorten)(description),
-                            color: 3447003
-                        }});
-                    }); 
+                    }).then(response => response.json())
+                      .then(response => response.data.Media);
+                    let displayName = data.name.first;
+                    if (data.name.last != null) {
+                        displayName += ` ${data.name.last}`;
+                    }
+                    msg.channel.send({embed: {
+                        author: {
+                            name: displayName,
+                            url: data.siteUrl,
+                            icon_url: anilistLogo
+                        },
+                        thumbnail: {
+                            url: data.image.large
+                        },
+                        description: pipe(removeSpoilers, shorten)(data.description),
+                        color: 3447003
+                    }});
                 }
                 break;
             case "person":
                 {
-                    request({
-                        url: 'https://graphql.anilist.co',
+                    const data = await fetch("https://graphql.anilist.co", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -246,36 +222,29 @@ query ($search: String) {
                                 search: input
                             }
                         })
-                    }, function(error, response, body) {
-                        const {
-                            name,
-                            siteUrl,
-                            image,
-                            description
-                        } = JSON.parse(body).data.Staff;
-                        let displayName = name.first;
-                        if (name.last != null) {
-                            displayName += ` ${name.last}`;
-                        }
-                        return msg.channel.send({embed: {
-                            author: {
-                                name: displayName,
-                                url: siteUrl,
-                                icon_url: anilistLogo
-                            },
-                            thumbnail: {
-                                url: image.large
-                            },
-                            description: pipe(removeSpoilers, shorten)(description),
-                            color: 3447003
-                        }});
-                    });
+                    }).then(response => response.json())
+                      .then(response => response.data.Staff);
+                    let displayName = data.name.first;
+                    if (data.name.last != null) {
+                        displayName += ` ${data.name.last}`;
+                    }
+                    msg.channel.send({embed: {
+                        author: {
+                            name: displayName,
+                            url: data.siteUrl,
+                            icon_url: anilistLogo
+                        },
+                        thumbnail: {
+                            url: data.image.large
+                        },
+                        description: pipe(removeSpoilers, shorten)(data.description),
+                        color: 3447003
+                    }});
                 }                
                 break;
             case "studio":
                 {
-                    request({
-                        url: 'https://graphql.anilist.co',
+                    const data = await fetch('https://graphql.anilist.co', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -303,29 +272,24 @@ query ($search: String) {
                                 search: input
                             }
                         })
-                    }, function(error, response, body) {
-                        const {
-                            name,
-                            siteUrl,
-                            media
-                        } = JSON.parse(body).data.Studio;
-                        let anime = "";
-                        media.nodes.map(media => {
-                            anime += `
-                            <a href='${media.siteUrl}'>${media.title.romaji}</a> <br>
-                            `;
-                        });
-                        return msg.channel.send({embed: {
-                            title: "Popular Anime",
-                            author: {
-                                name: name,
-                                url: siteUrl,
-                                icon_url: anilistLogo
-                            },
-                            description: pipe(removeSpoilers, shorten)(anime),
-                            color: 3447003
-                        }});
+                    }).then(response => response.json())
+                      .then(response => response.data.Studio);
+                    let anime = "";
+                    data.media.nodes.map(media => {
+                        anime += `
+                        <a href='${media.siteUrl}'>${media.title.romaji}</a> <br>
+                        `;
                     });
+                    msg.channel.send({embed: {
+                        title: "Popular Anime",
+                        author: {
+                            name: data.name,
+                            url: data.siteUrl,
+                            icon_url: anilistLogo
+                        },
+                        description: pipe(removeSpoilers, shorten)(anime),
+                        color: 3447003
+                    }});
                 }
                 break;
             default:

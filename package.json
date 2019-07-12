@@ -20,8 +20,8 @@
     "klasa": "github:dirigeants/klasa",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
+    "node-fetch": "^2.6.0",
     "query-string": "^6.8.1",
-    "request": "^2.88.0",
     "turndown": "^5.0.3"
   },
   "scripts": {
