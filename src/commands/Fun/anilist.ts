@@ -74,8 +74,6 @@ query ($search: String) {
           })
             .then(response => response.json())
             .then(response => response.data.Media);
-          console.log(data);
-          console.log(data.title);
           const scoreString =
             data.averageScore != null ? `Score: ${data.averageScore}%` : '';
           const statusString =
