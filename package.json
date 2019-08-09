@@ -13,6 +13,7 @@
     "husky": "^3.0.1",
     "nodemon": "^1.19.1",
     "prettier": "1.18.2",
+    "pretty-quick": "^1.11.1",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.2"
   },
@@ -23,14 +24,13 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "node-fetch": "^2.6.0",
-    "pretty-quick": "^1.11.1",
     "query-string": "^6.8.1",
     "turndown": "^5.0.3"
   },
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/index.js",
-    "dev": "nodemon --exec ts-node -- ./src/index.ts"
+    "dev": "nodemon --exec ts-node ./src/index.ts"
   },
   "husky": {
     "hooks": {
