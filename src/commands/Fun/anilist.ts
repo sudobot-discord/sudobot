@@ -146,7 +146,7 @@ query ($search: String) {
             })
           })
             .then(response => response.json())
-            .then(response => response.data.Character);
+            .then(response => response.data.Media);
           const scoreString =
             data.averageScore != null ? `Score: ${data.averageScore}%` : '';
           const statusString =
@@ -216,7 +216,7 @@ query ($search: String) {
             })
           })
             .then(response => response.json())
-            .then(response => response.data.Media);
+            .then(response => response.data.Character);
           let displayName = data.name.first;
           if (data.name.last != null) {
             displayName += ` ${data.name.last}`;
