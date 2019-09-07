@@ -16,7 +16,8 @@ export default class extends Command {
       enabled: true,
       requiredPermissions: ['EMBED_LINKS'],
       description: language => language.get('COMMAND_ANILIST_DESCRIPTION'),
-      usage: '<anime|manga|character|person|studio> <query:...string>',
+      usage:
+        '<a|anime|m|manga|c|character|p|person|s|studio> <query:...string>',
       usageDelim: ' '
     });
   }
@@ -26,13 +27,12 @@ export default class extends Command {
     [option, input]
   ): Promise<KlasaMessage | KlasaMessage[]> {
     const turndown = new Turndown();
+    turndown.remove('span');
     const anilistLogo = 'https://anilist.co/img/logo_al.png';
-    const pipe = (op1, op2) => arg => op2(op1(arg));
-    const removeSpoilers = str => str.replace(/<span[^>]*>.*<\/span>/g, '');
     const shorten = str => {
       const markdown = turndown.turndown(str);
-      if (markdown.length > 1990) {
-        return markdown.substring(0, 1991);
+      if (markdown.length > 500) {
+        return markdown.substring(0, 500) + '...';
       } else {
         return markdown;
       }
@@ -100,10 +100,7 @@ query ($search: String) {
               thumbnail: {
                 url: data.coverImage.large
               },
-              description: pipe(
-                removeSpoilers,
-                shorten
-              )(data.description),
+              description: shorten(data.description),
               footer: {
                 text: footer
               },
@@ -173,10 +170,7 @@ query ($search: String) {
               thumbnail: {
                 url: data.coverImage.large
               },
-              description: pipe(
-                removeSpoilers,
-                shorten
-              )(data.description),
+              description: shorten(data.description),
               footer: {
                 text: footer
               },
@@ -231,10 +225,7 @@ query ($search: String) {
               thumbnail: {
                 url: data.image.large
               },
-              description: pipe(
-                removeSpoilers,
-                shorten
-              )(data.description),
+              description: shorten(data.description),
               color: 3447003
             }
           });
@@ -286,10 +277,7 @@ query ($search: String) {
               thumbnail: {
                 url: data.image.large
               },
-              description: pipe(
-                removeSpoilers,
-                shorten
-              )(data.description),
+              description: shorten(data.description),
               color: 3447003
             }
           });
@@ -342,10 +330,7 @@ query ($search: String) {
                 url: data.siteUrl,
                 icon_url: anilistLogo
               },
-              description: pipe(
-                removeSpoilers,
-                shorten
-              )(anime),
+              description: shorten(anime),
               color: 3447003
             }
           });
